@@ -16,7 +16,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision
-
+from torch.utils.data import Dataset
+from torchvision import datasets
 import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
 from datasets_prep.lsun import LSUN
