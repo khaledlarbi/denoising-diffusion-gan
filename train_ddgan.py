@@ -186,6 +186,48 @@ def sample_from_model(coefficients, generator, n_time, x_init, T, opt):
         
     return x
 
+#Add for gaussian
+def generate_25_gaussian_dataset(size=5_000):
+    dataset = []
+
+    # Generate size //25 samples for each possible mean position :
+    for x in range(-2, 3):
+        for y in range(-2, 3):
+            # Generate size //25 samples with mean (x,y) :
+            for i in range(size // 25):
+                point = np.random.randn(2) * 0.05
+                point[0] += 2 * x
+                point[1] += 2 * y
+                dataset.append(point)
+    dataset = np.array(dataset, dtype='float32')
+    dataset /= 2.828  # stdev
+
+    # Return shuffled dataset :
+    np.random.shuffle(dataset)
+    return torch.from_numpy(dataset)
+
+
+def plot_2d(points, title=None, x_lim=(-1.7, 1.7), y_lim=(-1.7, 1.7), figsize=(4, 4)):
+    # Points of shape : nb_points x 2
+    plt.figure(figsize=figsize)
+    plt.xlim(x_lim)
+    plt.ylim(y_lim)
+    if title is not None:
+        plt.title(title)
+    plt.scatter(points[:, 0], points[:, 1])
+    plt.show()
+
+
+class MultiModeGaussian(Dataset):
+    def __init__(self, dt):
+        self.dt = dt
+
+    def __len__(self):
+        return self.dt.shape[0]
+
+    def __getitem__(self, idx):
+        return self.dt[idx, :], 0
+
 #%%
 def train(rank, gpu, args):
     from score_sde.models.discriminator import Discriminator_small, Discriminator_large
@@ -207,6 +249,18 @@ def train(rank, gpu, args):
                         transforms.RandomHorizontalFlip(),
                         transforms.ToTensor(),
                         transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))]), download=True)
+
+    elif args.dataset == 'gaussianmixture':
+        points = generate_25_gaussian_dataset(size=120000)
+        datagauss = MultiModeGaussian(points)
+        dataset = torch.utils.data.DataLoader(datagauss,
+                                               batch_size=batch_size,
+                                               shuffle=False,
+                                               num_workers=4,
+                                               pin_memory=True,
+                                               sampler=train_sampler,
+                                               drop_last = True)
+
        
     
     elif args.dataset == 'stackmnist':
