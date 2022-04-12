@@ -252,6 +252,10 @@ def train(rank, gpu, args):
                         transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))]), download=True)
 
     elif args.dataset == 'gaussianmixture':
+        train_sampler = torch.utils.data.distributed.DistributedSampler(dataset,
+                                                                        num_replicas=args.world_size,
+                                                                        rank=rank)
+
         points = generate_25_gaussian_dataset(size=120000)
         datagauss = MultiModeGaussian(points)
         dataset = torch.utils.data.DataLoader(datagauss,
