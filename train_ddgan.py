@@ -252,21 +252,11 @@ def train(rank, gpu, args):
                         transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))]), download=True)
 
     elif args.dataset == 'gaussianmixture':
-        train_sampler = torch.utils.data.distributed.DistributedSampler(dataset,
-                                                                        num_replicas=args.world_size,
-                                                                        rank=rank)
+
 
         points = generate_25_gaussian_dataset(size=120000)
-        datagauss = MultiModeGaussian(points)
-        dataset = torch.utils.data.DataLoader(datagauss,
-                                               batch_size=batch_size,
-                                               shuffle=False,
-                                               num_workers=4,
-                                               pin_memory=True,
-                                               sampler=train_sampler,
-                                               drop_last = True)
+        dataset = MultiModeGaussian(points)
 
-       
     
     elif args.dataset == 'stackmnist':
         train_transform, valid_transform = _data_transforms_stacked_mnist()
