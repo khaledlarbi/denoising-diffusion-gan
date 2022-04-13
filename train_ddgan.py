@@ -252,8 +252,6 @@ def train(rank, gpu, args):
                         transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))]), download=True)
 
     elif args.dataset == 'gaussianmixture':
-
-
         points = generate_25_gaussian_dataset(size=120000)
         dataset = MultiModeGaussian(points)
 
@@ -308,7 +306,7 @@ def train(rank, gpu, args):
     netG = NCSNpp(args).to(device)
     
 
-    if args.dataset == 'cifar10' or args.dataset == 'stackmnist':    
+    if args.dataset == 'cifar10' or args.dataset == 'stackmnist' or args.dataset == 'mnist':
         netD = Discriminator_small(nc = 2*args.num_channels, ngf = args.ngf,
                                t_emb_dim = args.t_emb_dim,
                                act=nn.LeakyReLU(0.2)).to(device)
