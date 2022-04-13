@@ -23,7 +23,7 @@ from torchvision.datasets import CIFAR10
 from datasets_prep.lsun import LSUN
 from datasets_prep.stackmnist_data import StackedMNIST, _data_transforms_stacked_mnist
 from datasets_prep.lmdb_datasets import LMDBDataset
-
+from torchvision.datasets import MNIST
 
 from torch.multiprocessing import Process
 import torch.distributed as dist
@@ -257,7 +257,13 @@ def train(rank, gpu, args):
         points = generate_25_gaussian_dataset(size=120000)
         dataset = MultiModeGaussian(points)
 
-    
+    elif args.dataset == "mnist":
+        dataset = MNIST('./data', train=True, transform=transforms.Compose([
+            transforms.Resize(32),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]), download=True)
+
     elif args.dataset == 'stackmnist':
         train_transform, valid_transform = _data_transforms_stacked_mnist()
         dataset = StackedMNIST(root='./data', train=True, download=False, transform=train_transform)
