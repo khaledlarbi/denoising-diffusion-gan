@@ -257,6 +257,7 @@ def train(rank, gpu, args):
 
     elif args.dataset == "mnist":
         dataset = MNIST('./data', train=True, transform=transforms.Compose([
+            transforms.Grayscale(3), #pas propre mais permet d'être sur 3 canaux
             transforms.Resize(32),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
