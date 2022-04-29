@@ -186,6 +186,7 @@ def sample_and_test(args):
         fake_sample = sample_from_model(pos_coeff, netG, args.num_timesteps, x_t_1,T,  args)
         fake_sample = to_range_0_1(fake_sample)
         torchvision.utils.save_image(fake_sample, './samples_{}.jpg'.format(args.dataset))
+        torch.save(fake_sample, './samples_{}.pt'.format(args.dataset))
 
     
     
