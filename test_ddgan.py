@@ -189,12 +189,14 @@ def sample_and_test(args):
             index = j
             #unique name
             import time
-            index = int(round(time.time() * 1000))
+            index = int(round(time.time() * 1000000))
 
             torchvision.utils.save_image(x, './generated_samples/{}/{}.jpg'.format(args.exp, index))
 
         torchvision.utils.save_image(fake_sample, './samples_{}.jpg'.format(args.dataset))
-        #torch.save(fake_sample, './samples_{}.pt'.format(args.dataset))
+        index = str(int(round(time.time() * 1000000)))
+        name_torch = args.dataset + index
+        torch.save(fake_sample, './samples_{}.pt'.format(name_torch))
 
 
 
