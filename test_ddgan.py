@@ -190,9 +190,8 @@ def sample_and_test(args):
             #unique name
             import time
             t = time.gmtime()
-            index = int(t.tm_sec + (t.tm_min * 60) + (t.tm_hour * 3600))
-
-            torchvision.utils.save_image(x, './generated_samples/{}/{}.jpg'.format(args.exp, index))
+            name = str(j) + "_" + str(int(t.tm_sec + (t.tm_min * 60) + (t.tm_hour * 3600)))
+            torchvision.utils.save_image(x, './generated_samples/{}/{}.jpg'.format(args.exp, name))
 
         torchvision.utils.save_image(fake_sample, './samples_{}.jpg'.format(args.dataset))
         #torch.save(fake_sample, './samples_{}.pt'.format(args.dataset))
