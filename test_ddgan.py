@@ -188,9 +188,17 @@ def sample_and_test(args):
         torchvision.utils.save_image(fake_sample, './samples_{}.jpg'.format(args.dataset))
         torch.save(fake_sample, './samples_{}.pt'.format(args.dataset))
 
-    
-    
-            
+        for i in range(iters_needed):
+            with torch.no_grad():
+                x_t_1 = torch.randn(args.batch_size, args.num_channels, args.image_size, args.image_size).to(device)
+                fake_sample = sample_from_model(pos_coeff, netG, args.num_timesteps, x_t_1, T, args)
+
+                fake_sample = to_range_0_1(fake_sample)
+                for j, x in enumerate(fake_sample):
+                    index = i * args.batch_size + j
+                    torchvision.utils.save_image(x, './generated_samples/{}/{}.jpg'.format(args.dataset, index))
+                print('generating batch ', i)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('ddgan parameters')
