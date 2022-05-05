@@ -186,7 +186,7 @@ def sample_and_test(args):
         fake_sample = sample_from_model(pos_coeff, netG, args.num_timesteps, x_t_1,T,  args)
         fake_sample = to_range_0_1(fake_sample)
         for j, x in enumerate(fake_sample):
-            index = i * args.batch_size + j
+            index = j
             torchvision.utils.save_image(x, './generated_samples/{}/{}.jpg'.format(args.exp, index))
 
         torchvision.utils.save_image(fake_sample, './samples_{}.jpg'.format(args.dataset))
